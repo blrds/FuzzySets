@@ -1,0 +1,135 @@
+﻿<Window x:Class="Fuzzy.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
+        xmlns:local="clr-namespace:Fuzzy"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:vm="clr-namespace:Fuzzy.ViewModels"
+        mc:Ignorable="d"
+        Title="Fuzzy Sets" Height="450" Width="800" Name="main" MinHeight="300" MinWidth="300"
+        >
+
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Menu>
+            <MenuItem>
+                <MenuItem.Header>
+                    <TextBlock Text="График"/>
+                </MenuItem.Header>
+                <MenuItem Command="{Binding DrawACommand}">
+                    <MenuItem.Header>
+                        <TextBlock Text="А"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Command="{Binding DrawBCommand}">
+                    <MenuItem.Header>
+                        <TextBlock Text="B"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem>
+                    <MenuItem.Header>
+                        <TextBlock Text="C"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem>
+                    <MenuItem.Header>
+                        <TextBlock Text="Очистить"/>
+                    </MenuItem.Header>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem>
+                <MenuItem.Header>
+                    <TextBlock Text="Сравнить"/>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem>
+                <MenuItem.Header>
+                    <TextBlock Text="Вычислить"/>
+                </MenuItem.Header>
+                <MenuItem>
+                    <MenuItem.Header>
+                        <TextBlock Text="Сумма"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem>
+                    <MenuItem.Header>
+                        <TextBlock Text="Разность"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem>
+                    <MenuItem.Header>
+                        <TextBlock Text="Произведение"/>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem>
+                    <MenuItem.Header>
+                        <TextBlock Text="Частное"/>
+                    </MenuItem.Header>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem>
+                <MenuItem.Header>
+                    <TextBlock Text="Выйти"/>
+                </MenuItem.Header>
+            </MenuItem>
+        </Menu>
+        <ToolBar Grid.Row="1" Background="Transparent" ToolBarTray.IsLocked="True" Loaded="ToolBar_Loaded">
+            <Button Style="{StaticResource ToolBarButton}" Background="{Binding Greater}">
+                <Button.Content>
+                    <fa:ImageAwesome Icon="Solid_GreaterThan"/>
+                </Button.Content>
+            </Button>
+            <Button Style="{StaticResource ToolBarButton}" Background="{Binding GreaterEqual}">
+                <Button.Content>
+                    <fa:ImageAwesome Icon="Solid_GreaterThanEqual"/>
+                </Button.Content>
+            </Button>
+            <Button Style="{StaticResource ToolBarButton}" Background="{Binding Less}">
+                <Button.Content>
+                    <fa:ImageAwesome Icon="Solid_LessThan"/>
+                </Button.Content>
+            </Button>
+            <Button Style="{StaticResource ToolBarButton}" Background="{Binding LessEqual}">
+                <Button.Content>
+                    <fa:ImageAwesome Icon="Solid_LessThanEqual"/>
+                </Button.Content>
+            </Button>
+            <Button Style="{StaticResource ToolBarButton}" Background="{Binding Equal}">
+                <Button.Content>
+                    <fa:ImageAwesome Icon="Solid_Equals"/>
+                </Button.Content>
+            </Button>
+            <Button Style="{StaticResource ToolBarButton}" Background="{Binding NonEqual}">
+                <Button.Content>
+                    <fa:ImageAwesome Icon="Solid_NotEqual"/>
+                </Button.Content>
+            </Button>
+        </ToolBar>
+        <DockPanel Grid.Row="2">
+            <StackPanel DockPanel.Dock="Left" Width="Auto">
+                <TextBlock Text="Множество А"/>
+                <DataGrid x:Name="a" AutoGenerateColumns="True" CanUserAddRows="True" ItemsSource="{Binding A, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="Множество В"/>
+                <DataGrid x:Name="b" AutoGenerateColumns="True" CanUserAddRows="True" ItemsSource="{Binding B, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="Множество С"/>
+                <DataGrid x:Name="c" AutoGenerateColumns="True" IsReadOnly="True" ItemsSource="{Binding C, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            </StackPanel>
+            <oxy:PlotView Model="{Binding model, Mode=OneWay}"/>
+        </DockPanel>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Left">
+            <TextBlock Text="Вывод" Margin="5,0,5,0"/>
+            <TextBlock Text="{Binding OutputMessage}"/>
+        </StackPanel>
+    </Grid>
+</Window>
