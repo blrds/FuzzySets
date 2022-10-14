@@ -128,8 +128,8 @@
             <oxy:PlotView Model="{Binding model, Mode=OneWay}"/>
         </DockPanel>
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Left">
-            <TextBlock Text="Вывод" Margin="5,0,5,0"/>
-            <TextBlock Text="{Binding OutputMessage}"/>
+            <TextBlock Text="Вывод" Margin="5,0,5,0" FontSize="16"/>
+            <TextBlock Text="{Binding OutputMessage}" FontSize="16" />
         </StackPanel>
     </Grid>
 </Window>

@@ -31,8 +31,8 @@ namespace Fuzzy.ViewModels
         #region A
         public ObservableCollection<Alpha> A { get; set; } = new ObservableCollection<Alpha>();
         public ICommand DrawACommand { get; }
-        private bool canDrawACommnadExecute(object p)
-        {
+
+        private bool canABe() {
             if (A.GroupBy(s => new { s.Slice }).Where(g => g.Count() > 1).Select(g => g.Key).Any()) return false;//duplictes
             if (A.Where(x => x.Less >= x.Greater).Any()) return false; //first point bigger than second
             List<Alpha> a = A.OrderBy(x => x.Slice).ToList();
@@ -46,6 +46,7 @@ namespace Fuzzy.ViewModels
             if (A.Count() < 2) return false;
             return true;
         }
+        private bool canDrawACommnadExecute(object p)=>canABe();
         private void DrawACommandExecuted(object p)
         {
             LineSeries line = new LineSeries();
@@ -91,7 +92,7 @@ namespace Fuzzy.ViewModels
                 {
                     if (a[i].Less > a[i + 1].Less || a[i].Greater < a[i + 1].Greater)
                     {
-                        OutputMessage += "В A присутсвует выпуклость\n";
+                        OutputMessage += "В A не выполняется условие вложенности\n";
                     }
                 }
             }
@@ -105,7 +106,8 @@ namespace Fuzzy.ViewModels
         #region B
         public ObservableCollection<Alpha> B { get; set; } = new ObservableCollection<Alpha>();
         public ICommand DrawBCommand { get; }
-        private bool canDrawBCommnadExecute(object p)
+
+        private bool canBBe()
         {
             if (B.GroupBy(s => new { s.Slice }).Where(g => g.Count() > 1).Select(g => g.Key).Any()) return false;//duplictes
             if (B.Where(x => x.Less >= x.Greater).Any()) return false;//first point bigger than second
@@ -119,6 +121,8 @@ namespace Fuzzy.ViewModels
             if (B.Count() < 2) return false;
             return true;
         }
+        private bool canDrawBCommnadExecute(object p) => canBBe();
+        
         private void DrawBCommandExecuted(object p)
         {
             LineSeries line = new LineSeries();
@@ -164,7 +168,7 @@ namespace Fuzzy.ViewModels
                 {
                     if (a[i].Less > a[i + 1].Less || a[i].Greater < a[i + 1].Greater)
                     {
-                        OutputMessage += "В B присутсвует выпуклость\n";
+                        OutputMessage += "В B не выполняется условие вложенности\n";
                     }
                 }
             }
@@ -199,7 +203,7 @@ namespace Fuzzy.ViewModels
 
         #region Sum
         public ICommand SumCommand { get; }
-        private bool canSumCommnadExecute(object p) => A.Count >= 2 && B.Count >= 2;
+        private bool canSumCommnadExecute(object p) => canABe() && canBBe();
         private void SumCommandExecuted(object p)
         {
             C=new ObservableCollection<Alpha>( Core.Sum(A.OrderBy(x=>x.Slice).ToList(), B.OrderBy(x=>x.Slice).ToList()));
@@ -209,7 +213,7 @@ namespace Fuzzy.ViewModels
 
         #region Sub
         public ICommand SubCommand { get; }
-        private bool canSubCommnadExecute(object p) => A.Count >= 2 && B.Count >= 2;
+        private bool canSubCommnadExecute(object p) => canABe() && canBBe();
         private void SubCommandExecuted(object p)
         {
             C = new ObservableCollection<Alpha>(Core.Sub(A.OrderBy(x => x.Slice).ToList(), B.OrderBy(x => x.Slice).ToList()));
@@ -219,7 +223,7 @@ namespace Fuzzy.ViewModels
 
         #region Mult
         public ICommand MultCommand { get; }
-        private bool canMultCommnadExecute(object p) => A.Count >= 2 && B.Count >= 2;
+        private bool canMultCommnadExecute(object p) => canABe() && canBBe();
         private void MultCommandExecuted(object p)
         {
             C = new ObservableCollection<Alpha>(Core.Mult(A.OrderBy(x => x.Slice).ToList(), B.OrderBy(x => x.Slice).ToList()));
@@ -229,7 +233,7 @@ namespace Fuzzy.ViewModels
 
         #region Div
         public ICommand DivCommand { get; }
-        private bool canDivCommnadExecute(object p) => A.Count >= 2 && B.Count >= 2;
+        private bool canDivCommnadExecute(object p) => canABe() && canBBe();
         private void DivCommandExecuted(object p)
         {
             try
@@ -245,7 +249,7 @@ namespace Fuzzy.ViewModels
 
         #region Comp
         public ICommand CompCommand { get; }
-        private bool canCompCommnadExecute(object p) => A.Count >= 2 && B.Count >= 2;
+        private bool canCompCommnadExecute(object p) => canABe() && canBBe();
         private void CompCommandExecuted(object p)
         {
             var a = Core.Comp(A.OrderBy(x => x.Slice).ToList(), B.OrderBy(x => x.Slice).ToList());
