@@ -37,18 +37,18 @@
                         <TextBlock Text="B"/>
                     </MenuItem.Header>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem Command="{Binding DrawCCommand}"> 
                     <MenuItem.Header>
                         <TextBlock Text="C"/>
                     </MenuItem.Header>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem Command="{Binding CleanCommand}">
                     <MenuItem.Header>
                         <TextBlock Text="Очистить"/>
                     </MenuItem.Header>
                 </MenuItem>
             </MenuItem>
-            <MenuItem>
+            <MenuItem Command="{Binding CompCommand}">
                 <MenuItem.Header>
                     <TextBlock Text="Сравнить"/>
                 </MenuItem.Header>
@@ -57,28 +57,28 @@
                 <MenuItem.Header>
                     <TextBlock Text="Вычислить"/>
                 </MenuItem.Header>
-                <MenuItem>
+                <MenuItem Command="{Binding SumCommand}">
                     <MenuItem.Header>
                         <TextBlock Text="Сумма"/>
                     </MenuItem.Header>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem Command="{Binding SubCommand}">
                     <MenuItem.Header>
                         <TextBlock Text="Разность"/>
                     </MenuItem.Header>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem Command="{Binding MultCommand}">
                     <MenuItem.Header>
                         <TextBlock Text="Произведение"/>
                     </MenuItem.Header>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem Command="{Binding DivCommand}">
                     <MenuItem.Header>
                         <TextBlock Text="Частное"/>
                     </MenuItem.Header>
                 </MenuItem>
             </MenuItem>
-            <MenuItem>
+            <MenuItem Command="{Binding ExitCommand}">
                 <MenuItem.Header>
                     <TextBlock Text="Выйти"/>
                 </MenuItem.Header>
