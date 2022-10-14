@@ -34,7 +34,7 @@ namespace Fuzzy.ViewModels
 
         private bool canABe() {
             if (A.GroupBy(s => new { s.Slice }).Where(g => g.Count() > 1).Select(g => g.Key).Any()) return false;//duplictes
-            if (A.Where(x => x.Less >= x.Greater).Any()) return false; //first point bigger than second
+            if (A.Where(x => (x.Less >= x.Greater && x.Slice != 1) || (x.Less > x.Greater && x.Slice == 1)).Any()) return false; //first point bigger than second
             List<Alpha> a = A.OrderBy(x => x.Slice).ToList();
             for (int i = 0; i < A.Count - 1; i++)//Convex
             {
@@ -81,7 +81,7 @@ namespace Fuzzy.ViewModels
             {
                 OutputMessage += "Дублирующийся срез в A\n";
             } //duplictes
-            if (A.Where(x => x.Less >= x.Greater).Any())
+            if (A.Where(x => (x.Less >= x.Greater && x.Slice!=1) || (x.Less > x.Greater && x.Slice == 1)).Any())
             {
                 OutputMessage += "Начальная граница одного из срезов A больше или равен конечному\n";
             } //first point bigger than second
@@ -110,7 +110,7 @@ namespace Fuzzy.ViewModels
         private bool canBBe()
         {
             if (B.GroupBy(s => new { s.Slice }).Where(g => g.Count() > 1).Select(g => g.Key).Any()) return false;//duplictes
-            if (B.Where(x => x.Less >= x.Greater).Any()) return false;//first point bigger than second
+            if (B.Where(x => (x.Less >= x.Greater && x.Slice != 1) || (x.Less > x.Greater && x.Slice == 1)).Any()) return false;//first point bigger than second
             List<Alpha> a = B.OrderBy(x => x.Slice).ToList();
             for (int i = 0; i < B.Count - 1; i++)//Convex
             {
@@ -157,7 +157,7 @@ namespace Fuzzy.ViewModels
             {
                 OutputMessage += "Дублирующийся срез в B\n";
             } //duplictes
-            if (B.Where(x => x.Less >= x.Greater).Any())
+            if (B.Where(x => (x.Less >= x.Greater && x.Slice != 1) || (x.Less > x.Greater && x.Slice == 1)).Any())
             {
                 OutputMessage += "Начальная граница одного из срезов B больше или равен конечному\n";
             } //first point bigger than second
