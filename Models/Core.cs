@@ -12,14 +12,22 @@ namespace Fuzzy.Models
         {
             Alpha answer = new Alpha();
             answer.Slice = Slice;
-            double a = (p.Slice - n.Slice) / (p.Less - n.Less);
-            double b = p.Slice - p.Less * ((p.Slice - n.Slice) / (p.Less - n.Less));
-            double x = (Slice - b) / a;
-            answer.Less = x;
-            a = (p.Slice - n.Slice) / (p.Greater - n.Greater);
-            b = p.Slice - p.Greater * ((p.Slice - n.Slice) / (p.Greater - n.Greater));
-            x = (Slice - b) / a;
-            answer.Greater = x;
+            if (p.Less == n.Less) answer.Less = p.Less;
+            else
+            {
+                double a = (p.Slice - n.Slice) / (p.Less - n.Less);
+                double b = p.Slice - p.Less * ((p.Slice - n.Slice) / (p.Less - n.Less));
+                double x = (Slice - b) / a;
+                answer.Less = x;
+            }
+            if (p.Greater == n.Greater) answer.Greater = n.Greater;
+            else
+            {
+                double a = (p.Slice - n.Slice) / (p.Greater - n.Greater);
+                double b = p.Slice - p.Greater * ((p.Slice - n.Slice) / (p.Greater - n.Greater));
+                double x = (Slice - b) / a;
+                answer.Greater = x;
+            }
             return answer;
         }
         private static Tuple<List<Alpha>, List<Alpha>> MakeThemEqual(List<Alpha> A, List<Alpha> B)
@@ -44,7 +52,7 @@ namespace Fuzzy.Models
             B.AddRange(newItems);
             newItems = new List<Alpha>();
             foreach (var a in bb)
-                for (int i = 0; i < B.Count - 1; i++)
+                for (int i = 0; i < A.Count - 1; i++)
                     if (A[i].Slice < a.Slice && A[i + 1].Slice > a.Slice)
                         newItems.Add(Approxima(a.Slice, A[i], A[i + 1]));
             A.AddRange(newItems);

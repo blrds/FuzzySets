@@ -33,8 +33,11 @@ namespace Fuzzy.ViewModels
         public ICommand DrawACommand { get; }
 
         private bool canABe() {
+            if (!(A.Where(x => x.Slice == 0).Any())) return false;
+            if (!(A.Where(x => x.Slice == 1).Any())) return false;
+            if (A.Where(x => x.Slice < 0 || x.Slice > 1).Any()) return false;
             if (A.GroupBy(s => new { s.Slice }).Where(g => g.Count() > 1).Select(g => g.Key).Any()) return false;//duplictes
-            if (A.Where(x => (x.Less >= x.Greater && x.Slice != 1) || (x.Less > x.Greater && x.Slice == 1)).Any()) return false; //first point bigger than second
+            if (A.Where(x =>x.Less > x.Greater).Any()) return false; //first point bigger than second
             List<Alpha> a = A.OrderBy(x => x.Slice).ToList();
             for (int i = 0; i < A.Count - 1; i++)//Convex
             {
@@ -72,18 +75,23 @@ namespace Fuzzy.ViewModels
             if (e.NewItems != null)
                 foreach (INotifyPropertyChanged newItem in e.NewItems)
                     newItem.PropertyChanged += OnAItemChanged;
+            OnAItemChanged(null, null);
         }
 
         public void OnAItemChanged(object sender, PropertyChangedEventArgs e)
         {
+
             OutputMessage = "";
+            if (!(A.Where(x => x.Slice == 0).Any())) OutputMessage += "B A Отсутствует 0ой срез\n";
+            if (!(A.Where(x => x.Slice == 1).Any())) OutputMessage += "B A Отсутсвует 1ый срез\n";
+            if (A.Where(x => x.Slice < 0 || x.Slice > 1).Any()) OutputMessage += "B A Выход за пределы допустимых значений\n";
             if (A.GroupBy(s => new { s.Slice }).Where(g => g.Count() > 1).Select(g => g.Key).Any())
             {
                 OutputMessage += "Дублирующийся срез в A\n";
             } //duplictes
-            if (A.Where(x => (x.Less >= x.Greater && x.Slice!=1) || (x.Less > x.Greater && x.Slice == 1)).Any())
+            if (A.Where(x => x.Less > x.Greater).Any())
             {
-                OutputMessage += "Начальная граница одного из срезов A больше или равен конечному\n";
+                OutputMessage += "Начальная граница одного из срезов A больше конечной\n";
             } //first point bigger than second
             if (A.Count() >= 2)
             {
@@ -109,8 +117,11 @@ namespace Fuzzy.ViewModels
 
         private bool canBBe()
         {
+            if (!(B.Where(x => x.Slice == 0).Any())) return false;
+            if (!(B.Where(x => x.Slice == 1).Any())) return false;
+            if (B.Where(x => x.Slice < 0 || x.Slice>1).Any()) return false;
             if (B.GroupBy(s => new { s.Slice }).Where(g => g.Count() > 1).Select(g => g.Key).Any()) return false;//duplictes
-            if (B.Where(x => (x.Less >= x.Greater && x.Slice != 1) || (x.Less > x.Greater && x.Slice == 1)).Any()) return false;//first point bigger than second
+            if (B.Where(x => x.Less > x.Greater).Any()) return false;//first point bigger than second
             List<Alpha> a = B.OrderBy(x => x.Slice).ToList();
             for (int i = 0; i < B.Count - 1; i++)//Convex
             {
@@ -148,18 +159,22 @@ namespace Fuzzy.ViewModels
             if (e.NewItems != null)
                 foreach (INotifyPropertyChanged newItem in e.NewItems)
                     newItem.PropertyChanged += OnBItemChanged;
+
+            OnBItemChanged(null, null);
         }
         private void OnBItemChanged(object sender, PropertyChangedEventArgs e)
         {
-
             OutputMessage = "";
+            if (!(B.Where(x => x.Slice == 0).Any())) OutputMessage += "B B Отсутствует 0ой срез\n";
+            if (!(B.Where(x => x.Slice == 1).Any())) OutputMessage += "B B Отсутсвует 1ый срез\n";
+            if (B.Where(x => x.Slice < 0 || x.Slice>1).Any()) OutputMessage += "B B Выход за пределы допустимых значений\n";
             if (B.GroupBy(s => new { s.Slice }).Where(g => g.Count() > 1).Select(g => g.Key).Any())
             {
                 OutputMessage += "Дублирующийся срез в B\n";
             } //duplictes
-            if (B.Where(x => (x.Less >= x.Greater && x.Slice != 1) || (x.Less > x.Greater && x.Slice == 1)).Any())
+            if (B.Where(x => x.Less > x.Greater).Any())
             {
-                OutputMessage += "Начальная граница одного из срезов B больше или равен конечному\n";
+                OutputMessage += "Начальная граница одного из срезов B больше конечной\n";
             } //first point bigger than second
             if (B.Count() >= 2)
             {
@@ -207,6 +222,11 @@ namespace Fuzzy.ViewModels
         private void SumCommandExecuted(object p)
         {
             C=new ObservableCollection<Alpha>( Core.Sum(A.OrderBy(x=>x.Slice).ToList(), B.OrderBy(x=>x.Slice).ToList()));
+            for (int i = 0; i < C.Count; i++)
+            {
+                C[i].Greater = Math.Round(C[i].Greater, 3);
+                C[i].Less = Math.Round(C[i].Less, 3);
+            }
             OnPropertyChanged("C");
         }
         #endregion
@@ -217,6 +237,11 @@ namespace Fuzzy.ViewModels
         private void SubCommandExecuted(object p)
         {
             C = new ObservableCollection<Alpha>(Core.Sub(A.OrderBy(x => x.Slice).ToList(), B.OrderBy(x => x.Slice).ToList()));
+            for (int i = 0; i < C.Count; i++)
+            {
+                C[i].Greater = Math.Round(C[i].Greater, 3);
+                C[i].Less = Math.Round(C[i].Less, 3);
+            }
             OnPropertyChanged("C");
         }
         #endregion
@@ -227,6 +252,11 @@ namespace Fuzzy.ViewModels
         private void MultCommandExecuted(object p)
         {
             C = new ObservableCollection<Alpha>(Core.Mult(A.OrderBy(x => x.Slice).ToList(), B.OrderBy(x => x.Slice).ToList()));
+            for (int i = 0; i < C.Count; i++)
+            {
+                C[i].Greater = Math.Round(C[i].Greater, 3);
+                C[i].Less = Math.Round(C[i].Less, 3);
+            }
             OnPropertyChanged("C");
         }
         #endregion
@@ -239,6 +269,11 @@ namespace Fuzzy.ViewModels
             try
             {
                 C = new ObservableCollection<Alpha>(Core.Div(A.OrderBy(x => x.Slice).ToList(), B.OrderBy(x => x.Slice).ToList()));
+                for (int i = 0; i < C.Count; i++)
+                {
+                    C[i].Greater = Math.Round(C[i].Greater, 3);
+                    C[i].Less = Math.Round(C[i].Less, 3);
+                }
                 OnPropertyChanged("C");
             }catch(ArgumentException e)
             {
@@ -295,11 +330,13 @@ namespace Fuzzy.ViewModels
             model.Axes.Last().Position = AxisPosition.Left;
             A.CollectionChanged += OnAChanged;
             B.CollectionChanged += OnBChanged;
-            A.Add(new Alpha(0, 0, 3));
-            A.Add(new Alpha(1, 1, 2));
-            B.Add(new Alpha(0, 0, 6));
-            B.Add(new Alpha(1, 2, 4));
-            B.Add(new Alpha(0.5, 0.5, 5.5));
+            A.Add(new Alpha(0, 0, 9));
+            A.Add(new Alpha(1, 2, 5));
+            A.Add(new Alpha(0.6, 0.7, 7.8));
+            B.Add(new Alpha(0, -6, 0));
+            B.Add(new Alpha(1, -4, -2));
+            B.Add(new Alpha(0.5, -5.5, -0.5));
+            B.Add(new Alpha(0.8, -5, -1));
             Greater = new SolidColorBrush(Color.FromRgb(255, 255, 255));
             GreaterEqual = new SolidColorBrush(Color.FromRgb(255, 255, 255));
             Less = new SolidColorBrush(Color.FromRgb(255, 255, 255));

@@ -34,7 +34,7 @@ namespace Fuzzy.Models
         public double Slice {
             get =>slice;
             set {
-                if (value >= 0 && value <= 1) slice = value;
+                slice = value;
                 OnPropertyChanged(nameof(Slice));   
             }
         }
