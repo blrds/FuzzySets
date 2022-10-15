@@ -75,7 +75,7 @@ namespace Fuzzy.Models
             var bb = t.Item2;
             List<Alpha> answer = new List<Alpha>();
             for (int i = 0; i < aa.Count; i++)
-                answer.Add(new Alpha(aa[i].Slice, aa[i].Less - bb[i].Less, aa[i].Greater - bb[i].Greater));
+                answer.Add(new Alpha(aa[i].Slice, aa[i].Less - bb[i].Greater, aa[i].Greater - bb[i].Less));
             return answer;
         }
         public static List<Alpha> Mult(List<Alpha> A, List<Alpha> B)
@@ -96,7 +96,7 @@ namespace Fuzzy.Models
             List<Alpha> answer = new List<Alpha>();
             for (int i = 0; i < aa.Count; i++)
                 if (bb[i].Less == 0 || bb[i].Greater == 0) throw new ArgumentException("Деление на 0");
-                else answer.Add(new Alpha(aa[i].Slice, aa[i].Less / bb[i].Less, aa[i].Greater / bb[i].Greater));
+                else answer.Add(new Alpha(aa[i].Slice, aa[i].Less / bb[i].Greater, aa[i].Greater / bb[i].Less));
             return answer;
         }
         public static List<bool> Comp(List<Alpha> A, List<Alpha> B)
